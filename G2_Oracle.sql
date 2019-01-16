@@ -1,4 +1,5 @@
 
+
 REM *******************************************************************
 REM drop tables
 REM *******************************************************************
@@ -16,6 +17,17 @@ DROP TABLE zip_code CASCADE CONSTRAINTS;
 DROP TABLE subscriber CASCADE CONSTRAINTS;
 DROP TABLE reservation CASCADE CONSTRAINTS;
 
+REM *******************************************************************
+REM maak tabel performance aan
+
+CREATE TABLE performance
+(theatre_performance VARCHAR2(30)
+,season DATE
+,producer VARCHAR2(30) NOT NULL
+,description VARCHAR2(200) NOT NULL
+,price_ticket NUMBER(6,2) NOT NULL
+,CONSTRAINT per_pk PRIMARY KEY(theatre_performance,season)
+);
 
 REM *******************************************************************
 REM maak tabel performance_date aan
@@ -39,6 +51,43 @@ CREATE TABLE reservation_performance
 ,date_time DATE
 ,CONSTRAINT res_perf_pk PRIMARY KEY(theatre_performance, date_time))
 ;
+
+REM *******************************************************************
+REM maak tabel zip_code aan
+
+CREATE TABLE zip_code
+(zip_code NUMBER(4)
+	CONSTRAINT zip_pk PRIMARY KEY
+,city VARCHAR2(25) NOT NULL
+);
+
+REM *******************************************************************
+REM maak tabel subscriber aan
+
+CREATE TABLE subscriber
+(subscriber_id NUMBER(10)
+	CONSTRAINT subscriber_pk  PRIMARY KEY
+,subscriber_name VARCHAR2(20)
+,subscriber_firstname VARCHAR2(20)
+,address VARCHAR2(30)
+,zip_code NUMBER(4)
+,telephone NUMBER(15)
+,email VARCHAR2(30)
+,CONSTRAINT sub_fk 
+	FOREIGN KEY(zip_code) REFERENCES zip_code(zip_code)
+);
+
+REM *******************************************************************
+REM maak tabel reservation aan
+
+CREATE TABLE reservation
+(reservation_id NUMBER(10)
+	CONSTRAINT res_pk PRIMARY KEY
+,subscriber_id NUMBER(10)
+,comments VARCHAR2(200)
+,CONSTRAINT res_fk 
+	FOREIGN KEY(subscriber_id) REFERENCES subscriber(subscriber_id)
+);
 
 REM *******************************************************************
 REM maak tabel reservation_spectator aan
@@ -108,17 +157,7 @@ CREATE TABLE location
 	FOREIGN KEY(zip_code) REFERENCES zip_code(zip_code)
 );
 
-REM *******************************************************************
-REM maak tabel performance aan
 
-CREATE TABLE performance
-(theatre_performance VARCHAR2(30)
-,season DATE
-,producer VARCHAR2(30) NOT NULL
-,description VARCHAR2(200) NOT NULL
-,price_ticket NUMBER(6,2) NOT NULL
-,CONSTRAINT per_pk PRIMARY KEY(theatre_performance,season)
-);
 
 REM *******************************************************************
 REM maak tabel performance_actor aan
@@ -146,39 +185,6 @@ CREATE TABLE actor
 ,known_from VARCHAR2(30))
 ;
 
-REM *******************************************************************
-REM maak tabel zip_code aan
 
-CREATE TABLE zip_code
-(zip_code NUMBER(4)
-	CONSTRAINT zip_pk PRIMARY KEY
-,city VARCHAR2(25) NOT NULL
-);
 
-REM *******************************************************************
-REM maak tabel subscriber aan
 
-CREATE TABLE subscriber
-(subscriber_id NUMBER(10)
-	CONSTRAINT subscriber_pk  PRIMARY KEY
-,subscriber_name VARCHAR2(20)
-,subscriber_firstname VARCHAR2(20)
-,address VARCHAR2(30)
-,zip_code NUMBER(4)
-,telephone NUMBER(15)
-,email VARCHAR2(30)
-,CONSTRAINT sub_fk 
-	FOREIGN KEY(zip_code) REFERENCES zip_code(zip_code)
-);
-
-REM *******************************************************************
-REM maak tabel reservation aan
-
-CREATE TABLE reservation
-(reservation_id NUMBER(10)
-	CONSTRAINT res_pk PRIMARY KEY
-,subscriber_id NUMBER(10)
-,comments VARCHAR2(200)
-,CONSTRAINT res_fk 
-	FOREIGN KEY(subscriber_id) REFERENCES subscriber(subscriber_id)
-);
